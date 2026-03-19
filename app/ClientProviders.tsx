@@ -5,10 +5,8 @@ import ContextProvider from "./components/context/index";
 
 export default function ClientProviders({
   children,
-  cookies,
 }: {
   children: React.ReactNode;
-  cookies: string | null;
 }) {
-  return <ContextProvider cookies={cookies}>{children}</ContextProvider>;
+  return <ContextProvider>{children}</ContextProvider>;
 }

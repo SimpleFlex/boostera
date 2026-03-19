@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import background from "./public/boost.png";
 
-import { headers } from "next/headers";
 import ContextProvider from "./components/context";
 import AnimatedBackground from "./components/layout/AnimatedBackground";
 import Footer from "./components/layout/Footer";
@@ -16,12 +15,9 @@ export const metadata: Metadata = {
   description: "Powered by Reown",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const headersObj = await headers();
-  const cookies = headersObj.get("cookie");
-
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -40,7 +36,7 @@ export default async function RootLayout({
             {/* Main content */}
             <div className="relative min-h-screen bg-white/5 backdrop-blur-xl flex flex-col">
               <AnimatedBackground />
-              <ContextProvider cookies={cookies}>
+              <ContextProvider>
                 <div className="flex-1">{children}</div>
                 <Footer />
               </ContextProvider>
