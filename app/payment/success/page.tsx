@@ -1,12 +1,6 @@
-// 📁 LOCATION: app/payment/success/page.tsx
-// ✅ REPLACE the existing file with this one
-// Only 1 thing changed from your original:
-// - "Back to Promote Page" button → "View My Promotion →" now links to /memedrop
-// Everything else is identical to your original
-// ─────────────────────────────────────────────────────────────────────────────
-
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { PLANS, type PlanId } from "../../lib/plans";
@@ -16,7 +10,7 @@ function formatSol(lamports: number) {
   return sol.toFixed(4).replace(/\.?0+$/, "");
 }
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessInner() {
   const sp = useSearchParams();
   const router = useRouter();
 
@@ -50,7 +44,6 @@ export default function PaymentSuccessPage() {
             <span className="text-white/60">Token CA:</span>{" "}
             <span className="break-all text-white/90 font-semibold">{ca}</span>
           </div>
-
           <div>
             <span className="text-white/60">Plan:</span>{" "}
             <span className="text-white/90 font-semibold">{current.label}</span>{" "}
@@ -58,7 +51,6 @@ export default function PaymentSuccessPage() {
               ({formatSol(current.lamports)} SOL)
             </span>
           </div>
-
           <div>
             <span className="text-white/60">Transaction:</span>{" "}
             <span className="break-all text-white/90 font-semibold">{sig}</span>
@@ -69,37 +61,33 @@ export default function PaymentSuccessPage() {
           <div className="text-sm font-semibold text-white/80">
             What you paid for
           </div>
-
           <ul className="mt-3 space-y-2 text-sm text-white/75">
             {current.features.map((f) => (
               <li key={f}>• {f}</li>
             ))}
           </ul>
-
           <div className="mt-4 text-sm font-semibold text-white/70">
             {current.purpose}
           </div>
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          {/* ✅ CHANGED: was /promote, now goes to /memedrop with ca+plan+sig */}
           <Link
             href={`/memedrop?ca=${encodeURIComponent(ca)}&plan=${encodeURIComponent(plan)}&sig=${encodeURIComponent(sig)}`}
-            className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 px-5 py-2 text-sm font-extrabold text-white hover:opacity-90 transition"
+            className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 px-5 py-2 text-sm font-extrabold text-white hover:opacity-90 transition cursor-pointer"
           >
             View My Promotion →
           </Link>
-
           <Link
             href="/"
-            className="rounded-xl border border-white/10 bg-white/5 px-5 py-2 text-sm font-semibold text-white/80 hover:bg-white/10 transition"
+            className="rounded-xl border border-white/10 bg-white/5 px-5 py-2 text-sm font-semibold text-white/80 hover:bg-white/10 transition cursor-pointer"
           >
             Home
           </Link>
         </div>
       </div>
 
-      {/* Upgrade section — unchanged */}
+      {/* Upgrade section */}
       <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-8">
         <div className="text-lg font-bold text-white/90">Upgrade</div>
         <div className="mt-2 text-sm text-white/60">
@@ -108,7 +96,7 @@ export default function PaymentSuccessPage() {
 
         {upgrades.length === 0 ? (
           <div className="mt-6 text-sm text-white/70">
-            Youre already on the highest plan.
+            You&apos;re already on the highest plan.
           </div>
         ) : (
           <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -123,7 +111,7 @@ export default function PaymentSuccessPage() {
                       `/checkout?ca=${encodeURIComponent(ca)}&plan=${encodeURIComponent(id)}`
                     )
                   }
-                  className="rounded-2xl border border-white/10 bg-white/5 p-6 text-left hover:bg-white/10 transition"
+                  className="rounded-2xl border border-white/10 bg-white/5 p-6 text-left hover:bg-white/10 transition cursor-pointer"
                 >
                   <div className="text-white/90 font-bold">{p.label}</div>
                   <div className="mt-1 text-sm text-white/60">
@@ -142,5 +130,22 @@ export default function PaymentSuccessPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 animate-pulse">
+            <div className="h-6 w-48 rounded-lg bg-white/10 mb-4" />
+            <div className="h-4 w-full rounded-lg bg-white/10" />
+          </div>
+        </div>
+      }
+    >
+      <PaymentSuccessInner />
+    </Suspense>
   );
 }
