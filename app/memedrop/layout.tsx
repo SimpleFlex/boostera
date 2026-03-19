@@ -34,7 +34,7 @@ export default async function MemedropLayout({
         <div className="relative min-h-screen bg-white/5 backdrop-blur-xl flex flex-col">
           <AnimatedBackground />
 
-          <ContextProvider cookies={cookies}>
+          <ContextProvider>
             <div className="relative z-10 flex-1">{children}</div>
           </ContextProvider>
         </div>
