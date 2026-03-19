@@ -29,10 +29,13 @@ export const solanaAdapter = new SolanaAdapter({
   wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
 });
 
-// Metadata
+// Metadata — uses actual origin so localhost works in dev
 export const metadata = {
   name: "BoostEra",
   description: "Promote your Solana meme coins",
-  url: "https://boostera.com",
+  url:
+    typeof window !== "undefined"
+      ? window.location.origin
+      : "https://boostera.com",
   icons: ["https://avatars.githubusercontent.com/u/179229932"],
 };

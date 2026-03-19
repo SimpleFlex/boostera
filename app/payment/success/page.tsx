@@ -1,3 +1,10 @@
+// 📁 LOCATION: app/payment/success/page.tsx
+// ✅ REPLACE the existing file with this one
+// Only 1 thing changed from your original:
+// - "Back to Promote Page" button → "View My Promotion →" now links to /memedrop
+// Everything else is identical to your original
+// ─────────────────────────────────────────────────────────────────────────────
+
 "use client";
 
 import Link from "next/link";
@@ -75,11 +82,12 @@ export default function PaymentSuccessPage() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
+          {/* ✅ CHANGED: was /promote, now goes to /memedrop with ca+plan+sig */}
           <Link
-            href={`/promote?ca=${encodeURIComponent(ca)}`}
-            className="rounded-xl border border-white/10 bg-white/5 px-5 py-2 text-sm font-semibold text-white/80 hover:bg-white/10 transition"
+            href={`/memedrop?ca=${encodeURIComponent(ca)}&plan=${encodeURIComponent(plan)}&sig=${encodeURIComponent(sig)}`}
+            className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 px-5 py-2 text-sm font-extrabold text-white hover:opacity-90 transition"
           >
-            Back to Promote Page
+            View My Promotion →
           </Link>
 
           <Link
@@ -91,7 +99,7 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
 
-      {/* Upgrade section */}
+      {/* Upgrade section — unchanged */}
       <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-8">
         <div className="text-lg font-bold text-white/90">Upgrade</div>
         <div className="mt-2 text-sm text-white/60">
@@ -100,7 +108,7 @@ export default function PaymentSuccessPage() {
 
         {upgrades.length === 0 ? (
           <div className="mt-6 text-sm text-white/70">
-            You’re already on the highest plan.
+            Youre already on the highest plan.
           </div>
         ) : (
           <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -112,9 +120,7 @@ export default function PaymentSuccessPage() {
                   type="button"
                   onClick={() =>
                     router.push(
-                      `/checkout?ca=${encodeURIComponent(ca)}&plan=${encodeURIComponent(
-                        id
-                      )}`
+                      `/checkout?ca=${encodeURIComponent(ca)}&plan=${encodeURIComponent(id)}`
                     )
                   }
                   className="rounded-2xl border border-white/10 bg-white/5 p-6 text-left hover:bg-white/10 transition"

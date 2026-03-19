@@ -5,12 +5,21 @@ export type PlanId =
   | "authority"
   | "authority_plus";
 
+export const PLAN_DURATION_DAYS: Record<PlanId, number> = {
+  discovery: 1,
+  starter: 3,
+  growth: 7,
+  authority: 10,
+  authority_plus: 14,
+};
+
 export const PLANS: Record<
   PlanId,
   {
     label: string;
     usd: number;
     lamports: number;
+    durationDays: number;
     features: string[];
     purpose: string;
   }
@@ -19,6 +28,7 @@ export const PLANS: Record<
     label: "$15 Discovery Raffle",
     usd: 15,
     lamports: 0.1 * 1_000_000_000,
+    durationDays: 1,
     features: [
       "Project discovery listing",
       "Search indexing (token name + contract address)",
@@ -31,6 +41,7 @@ export const PLANS: Record<
     label: "$250 DEX Starter",
     usd: 250,
     lamports: 1 * 1_000_000_000,
+    durationDays: 3,
     features: [
       "Banner ads on DexScreener",
       "Banner ads on DEXTools",
@@ -45,6 +56,7 @@ export const PLANS: Record<
     label: "$400 DEX Growth",
     usd: 400,
     lamports: 1.6 * 1_000_000_000,
+    durationDays: 7,
     features: [
       "Banner ads on DexScreener",
       "Banner ads on DEXTools",
@@ -61,6 +73,7 @@ export const PLANS: Record<
     label: "$600 DEX Authority (KOL Access)",
     usd: 600,
     lamports: 2.4 * 1_000_000_000,
+    durationDays: 10,
     features: [
       "Premium banners on DexScreener",
       "Premium banners on DEXTools",
@@ -77,7 +90,8 @@ export const PLANS: Record<
   authority_plus: {
     label: "$1000 DEX Authority (Premium)",
     usd: 1000,
-    lamports: 4 * 1_000_000_000, // ✅ set your real SOL price here
+    lamports: 4 * 1_000_000_000,
+    durationDays: 14,
     features: [
       "Premium banners on DexScreener",
       "Premium banners on DEXTools",

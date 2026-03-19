@@ -26,27 +26,27 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <LenisProvider>
-          {" "}
-          {/* ✅ WRAP HERE */}
-          <div className="relative min-h-screen overflow-hidden text-white">
+          {/* ❌ removed overflow-hidden — it breaks sticky positioning */}
+          <div className="relative min-h-screen text-white">
+            {/* Background image — fixed so it stays while scrolling */}
             <div
-              className="pointer-events-none absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat"
+              className="pointer-events-none fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${background.src})` }}
             />
 
-            <div className="pointer-events-none absolute inset-0 -z-10 bg-black/60" />
+            {/* Dark overlay — fixed too */}
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-black/60" />
 
+            {/* Main content */}
             <div className="relative min-h-screen bg-white/5 backdrop-blur-xl flex flex-col">
               <AnimatedBackground />
-
               <ContextProvider cookies={cookies}>
                 <div className="flex-1">{children}</div>
                 <Footer />
               </ContextProvider>
             </div>
           </div>
-        </LenisProvider>{" "}
-        {/* ✅ CLOSE HERE */}
+        </LenisProvider>
       </body>
     </html>
   );

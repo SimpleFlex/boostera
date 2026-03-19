@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { PLANS, type PlanId } from "../../../lib/plans";
+import { savePayment } from "../../../lib/paymentsStore";
 
 type Body = {
   signature: string;
   payer: string;
   plan: PlanId;
+  ca: string;
 };
 
 export async function POST(req: Request) {
@@ -28,7 +30,6 @@ export async function POST(req: Request) {
     const sig = body.signature?.trim();
     if (!sig) return new NextResponse("Missing signature", { status: 400 });
 
-    // Confirm transaction exists
     const tx = await connection.getParsedTransaction(sig, {
       maxSupportedTransactionVersion: 0,
       commitment: "confirmed",
@@ -42,15 +43,11 @@ export async function POST(req: Request) {
     const merchantPk = new PublicKey(merchant).toBase58();
     const payerPk = new PublicKey(body.payer).toBase58();
 
-    // Check instructions for a SystemProgram transfer to merchant
     const requiredLamports = Math.round(config.lamports);
-
     let paidLamports = 0;
 
     const ixs = tx.transaction.message.instructions;
     for (const ix of ixs) {
-      // Parsed transfer from SystemProgram
-      // structure: { program: 'system', parsed: { type: 'transfer', info: { source, destination, lamports } } }
       const anyIx = ix as unknown as {
         program?: string;
         parsed?: {
@@ -72,18 +69,35 @@ export async function POST(req: Request) {
     if (paidLamports < requiredLamports) {
       return new NextResponse(
         `Underpaid. Paid ${paidLamports}, need ${requiredLamports}`,
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 
-    // ✅ Payment verified (store to DB here if you want)
+    // ── Save payment record ───────────────────────────────────────────────────
+    const paidAt = new Date();
+    const expiresAt = new Date(paidAt);
+    // Duration scales with plan — max 14 days
+    expiresAt.setDate(expiresAt.getDate() + (config.durationDays ?? 1));
+
+    savePayment({
+      id: `${sig.slice(0, 8)}-${Date.now()}`,
+      wallet: payerPk,
+      ca: body.ca?.trim() ?? "",
+      plan: body.plan,
+      planLabel: config.label,
+      usd: config.usd,
+      lamports: paidLamports,
+      signature: sig,
+      paidAt: paidAt.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+    });
+
     return NextResponse.json({
       ok: true,
       paidLamports,
       requiredLamports,
       signature: sig,
+      expiresAt: expiresAt.toISOString(),
     });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "Server error";
