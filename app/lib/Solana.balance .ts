@@ -2,7 +2,7 @@
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 const SOLANA_RPC_URL =
-  process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.testnet.solana.com";
+  process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.mainnet-beta.solana.com";
 const connection = new Connection(SOLANA_RPC_URL);
 const MINIMUM_BALANCE = 0.1; // 0.1 SOL
 
