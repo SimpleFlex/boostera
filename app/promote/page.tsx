@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
-import { PACKAGES } from "../../lib/packages";
+import { PACKAGES, type PromotionPackage } from "../../lib/packages";
 
 function detectChain(ca: string): string {
   if (ca.startsWith("0x") && ca.length === 42) return "Ethereum";
@@ -17,7 +17,7 @@ function PromoteInner() {
   const ca = searchParams.get("ca") || "";
   
   const [chain, setChain] = useState<string | null>(null);
-  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [selectedPackage, setSelectedPackage] = useState<PromotionPackage | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function PromoteInner() {
     setLoading(false);
   }, [ca, router]);
 
-  const handleSelectPackage = (pkg) => {
+  const handleSelectPackage = (pkg: PromotionPackage) => {
     setSelectedPackage(pkg);
   };
 
@@ -82,7 +82,7 @@ function PromoteInner() {
           <div>
             <h2 className="mb-4 text-lg font-semibold text-white/90">Select Your Package</h2>
             <div className="space-y-4">
-              {PACKAGES && PACKAGES.map((pkg) => (
+              {PACKAGES.map((pkg) => (
                 <div
                   key={pkg.id}
                   onClick={() => handleSelectPackage(pkg)}
@@ -103,7 +103,6 @@ function PromoteInner() {
                     </div>
                     <div className="text-right">
                       <div className="text-xl font-bold text-white">${pkg.price.usd}</div>
-                      <div className="text-xs text-white/40">≈ {pkg.price.usdt} USDT</div>
                     </div>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
