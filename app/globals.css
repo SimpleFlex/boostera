@@ -1,76 +1,82 @@
-@import "tailwindcss";
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* ✅ SMOOTH SCROLL - Mobile optimized */
-html {
-  scroll-behavior: smooth;
-  /* Better performance on mobile */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  /* Reduce layout thrashing */
-  position: relative;
-}
-
-/* ✅ Smooth scroll for specific elements */
-.smooth-scroll {
-  scroll-behavior: smooth;
-}
-
-.rgb-text {
-  background: linear-gradient(
-    90deg,
-    #ff3cac 0%,
-    #784ba0 30%,
-    #2b86c5 60%,
-    #00ffb2 100%
-  );
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: rgbShift 3.5s linear infinite;
-  will-change: background-position;
-}
-
-.rainbow-text {
-  background: linear-gradient(
-    90deg,
-    #ff3cac 0%,
-    #784ba0 30%,
-    #2b86c5 60%,
-    #00ffb2 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-@keyframes rgbShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 100% 50%;
+@layer base {
+  body {
+    background-color: black;
+    color: white;
   }
 }
 
-/* ===== Background particles ===== */
-.bg-particle {
-  position: absolute;
-  user-select: none;
-  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
-  /* ✅ Only GPU-accelerated transforms */
-  will-change: transform;
-  animation: particleFloat var(--dur, 10s) ease-in-out var(--delay, 0s) infinite;
-  /* Ensure particles use GPU */
-  backface-visibility: hidden;
-  perspective: 1000px;
-  transform: translateZ(0);
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .glass {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+  }
+
+  .glow {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+
+  .glow-hover:hover {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+  }
+
+  .bg-particle {
+    position: absolute;
+    user-select: none;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
+    will-change: transform;
+    animation: particleFloat var(--dur, 10s) ease-in-out var(--delay, 0s)
+      infinite;
+    backface-visibility: hidden;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.3;
+    will-change: transform;
+  }
+
+  .blob-1 {
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 60, 172, 0.4);
+    top: -50%;
+    left: -50%;
+    animation: blobMove1 15s ease-in-out infinite;
+  }
+
+  .blob-2 {
+    width: 350px;
+    height: 350px;
+    background: rgba(43, 134, 197, 0.3);
+    top: 50%;
+    right: -10%;
+    animation: blobMove2 18s ease-in-out infinite;
+  }
+
+  .blob-3 {
+    width: 300px;
+    height: 300px;
+    background: rgba(0, 255, 178, 0.2);
+    bottom: -20%;
+    left: 20%;
+    animation: blobMove3 20s ease-in-out infinite;
+  }
 }
 
-/* ✅ Only animate transform (GPU) - NO opacity changes */
 @keyframes particleFloat {
   0% {
     transform: translate3d(0, 0, 0) rotate(0deg);
@@ -81,44 +87,6 @@ body {
   100% {
     transform: translate3d(0, 0, 0) rotate(360deg);
   }
-}
-
-/* ===== Blob animations (desktop only) ===== */
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.3;
-  will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-.blob-1 {
-  width: 400px;
-  height: 400px;
-  background: rgba(255, 60, 172, 0.4);
-  top: -50%;
-  left: -50%;
-  animation: blobMove1 15s ease-in-out infinite;
-}
-
-.blob-2 {
-  width: 350px;
-  height: 350px;
-  background: rgba(43, 134, 197, 0.3);
-  top: 50%;
-  right: -10%;
-  animation: blobMove2 18s ease-in-out infinite;
-}
-
-.blob-3 {
-  width: 300px;
-  height: 300px;
-  background: rgba(0, 255, 178, 0.2);
-  bottom: -20%;
-  left: 20%;
-  animation: blobMove3 20s ease-in-out infinite;
 }
 
 @keyframes blobMove1 {
@@ -157,45 +125,33 @@ body {
   }
 }
 
-/* ✅ Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   .bg-particle,
   .blob {
     animation: none !important;
-    will-change: auto;
-  }
-
-  .rgb-text {
-    animation: none !important;
   }
 }
 
-/* ✅ Mobile optimizations */
 @media (max-width: 768px) {
   .blob {
-    display: none; /* Don't render blobs on mobile */
-  }
-
-  /* Reduce motion on mobile for battery life */
-  .bg-particle {
-    animation-duration: calc(var(--dur, 10s) * 1.2) !important;
-    /* Reduce blur on mobile */
-    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+    display: none;
   }
 }
-
-/* ✅ Prevent layout shift and optimize repaints */
-* {
-  box-sizing: border-box;
+/* Additional floating effects */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
+@keyframes float-slower {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-slower {
+  animation: float-slower 12s ease-in-out infinite;
 }
