@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   description: "Get your token seen by thousands across crypto communities. Launch your marketing campaign in minutes.",
 };
 
+// Force dynamic rendering to avoid prerendering issues with useSearchParams
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: {

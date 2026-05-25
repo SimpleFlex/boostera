@@ -4,7 +4,6 @@ import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Copy, Loader2, Mail, RefreshCw } from "lucide-react";
 import { PACKAGES, PAYMENT_ADDRESSES, PAYMENT_NETWORKS } from "../../lib/packages";
-import { getLivePrices, usdToCrypto, formatCryptoAmount } from "../../lib/priceService";
 
 function detectChain(ca: string): string {
   if (ca.startsWith("0x") && ca.length === 42) return "Ethereum";
@@ -12,7 +11,7 @@ function detectChain(ca: string): string {
   return "Unknown";
 }
 
-function CheckoutInner() {
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ca = searchParams.get("ca") || "";
@@ -146,27 +145,12 @@ function CheckoutInner() {
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl sticky top-24">
               <h3 className="mb-4 text-lg font-semibold text-white/90">Order Summary</h3>
               <div className="space-y-3 border-b border-white/10 pb-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/50">Package</span>
-                  <span className="text-white/80">{selectedPackage.name}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/50">Duration</span>
-                  <span className="text-white/80">{selectedPackage.duration}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/50">Chain</span>
-                  <span className="text-white/80">{chain}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/50">Token CA</span>
-                  <span className="font-mono text-xs text-white/60">{ca.slice(0, 8)}...{ca.slice(-6)}</span>
-                </div>
+                <div className="flex justify-between text-sm"><span className="text-white/50">Package</span><span className="text-white/80">{selectedPackage.name}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-white/50">Duration</span><span className="text-white/80">{selectedPackage.duration}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-white/50">Chain</span><span className="text-white/80">{chain}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-white/50">Token CA</span><span className="font-mono text-xs text-white/60">{ca.slice(0, 8)}...{ca.slice(-6)}</span></div>
               </div>
-              <div className="mt-4 flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span className="text-blue-400">${selectedPackage.price.usd} USD</span>
-              </div>
+              <div className="mt-4 flex justify-between text-lg font-bold"><span>Total</span><span className="text-blue-400">${selectedPackage.price.usd} USD</span></div>
             </div>
           </div>
 
@@ -200,7 +184,7 @@ function CheckoutInner() {
                   </div>
                   <div className="text-center">
                     <p className="text-2xl font-bold text-white">
-                      {loadingPrices ? "Loading..." : `${formatCryptoAmount(currentCryptoAmount, selectedMethod)} ${selectedMethod === "USDT_TRC20" ? "USDT" : selectedMethod}`}
+                      {loadingPrices ? "Loading..." : `${currentCryptoAmount.toFixed(currentMethod?.decimals || 2)} ${selectedMethod === "USDT_TRC20" ? "USDT" : selectedMethod}`}
                     </p>
                     <p className="text-sm text-white/40 mt-1">≈ ${selectedPackage.price.usd} USD</p>
                   </div>
@@ -257,13 +241,7 @@ function CheckoutInner() {
                   disabled={!txHash.trim() || !userEmail.trim() || isSubmitting}
                   className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 py-4 font-semibold text-white transition hover:scale-[1.02] disabled:opacity-50"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" /> Submitting...
-                    </>
-                  ) : (
-                    "I Have Paid →"
-                  )}
+                  {isSubmitting ? <><Loader2 className="h-5 w-5 animate-spin" /> Submitting...</> : <>I Have Paid →</>}
                 </button>
               </div>
             ) : (
@@ -284,7 +262,7 @@ function CheckoutInner() {
 export default function CheckoutPage() {
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
-      <CheckoutInner />
+      <CheckoutContent />
     </Suspense>
   );
 }

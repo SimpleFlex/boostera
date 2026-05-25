@@ -11,7 +11,7 @@ function detectChain(ca: string): string {
   return "Unknown";
 }
 
-function PromoteInner() {
+function PromoteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ca = searchParams.get("ca") || "";
@@ -135,7 +135,7 @@ function PromoteInner() {
 export default function PromotePage() {
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
-      <PromoteInner />
+      <PromoteContent />
     </Suspense>
   );
 }

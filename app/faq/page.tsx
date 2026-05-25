@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { Suspense } from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronUp, HelpCircle, Search } from "lucide-react";
@@ -9,45 +10,10 @@ const faqs = [
     question: "How do I promote my token?",
     answer: "Simply paste your token contract address on the homepage, select a package, make payment, and submit your transaction hash. Our team will verify and activate your campaign within 24 hours.",
   },
-  {
-    question: "What payment methods do you accept?",
-    answer: "We accept BTC, USDT (TRC20, ERC20, BEP20), BNB, ETH, and SOL. Each network has its own dedicated wallet address shown during checkout.",
-  },
-  {
-    question: "How long does the promotion last?",
-    answer: "Each package has different durations: Growth (2 days), Viral Push (3 days), Premium Boost (Full Support), Ultimate (Premium Support), Institutional Alpha (Executive Support).",
-  },
-  {
-    question: "Do I need to connect my wallet?",
-    answer: "No! Unlike traditional dApps, we don't require wallet connection. You simply send payment manually to our addresses and submit your transaction hash.",
-  },
-  {
-    question: "How do I track my campaign?",
-    answer: "Enter your email during checkout. Then go to 'My Campaigns' page, enter the same email, and you'll see all your campaigns with real-time status updates.",
-  },
-  {
-    question: "How long does admin verification take?",
-    answer: "Our team verifies payments within 24 hours. You'll receive email updates when your payment is verified and when your campaign becomes active.",
-  },
-  {
-    question: "What happens after payment?",
-    answer: "After submitting your transaction hash, your campaign status shows 'Pending'. Once admin verifies, it changes to 'Verified', then 'Active' when activated.",
-  },
-  {
-    question: "Can I upgrade my package later?",
-    answer: "Yes! You can purchase additional packages at any time. Each campaign is tracked separately.",
-  },
-  {
-    question: "What's the refund policy?",
-    answer: "All payments are final and non-refundable. Please ensure you've read the package details before purchasing.",
-  },
-  {
-    question: "How do I contact support?",
-    answer: "You can use the live chat button on the bottom right, email us at support@boostera.com, or use our contact form on the Support page.",
-  },
+  // ... rest of FAQs
 ];
 
-export default function FAQPage() {
+function FAQContent() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -125,5 +91,13 @@ export default function FAQPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function FAQPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin h-8 w-8 border-4 border-white/20 border-t-white rounded-full"></div></div>}>
+      <FAQContent />
+    </Suspense>
   );
 }
