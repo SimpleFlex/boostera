@@ -35,7 +35,6 @@ export default function PartnersSection() {
           {PARTNERS.map((partner, index) => (
             <motion.a
               key={partner.id}
-              href={partner.url}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, scale: 0.9 }}
