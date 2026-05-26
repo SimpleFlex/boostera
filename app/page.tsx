@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Zap, TrendingUp, Users, Rocket, Shield, Star } from "lucide-react";
 import { PACKAGES } from "../lib/packages";
+import PartnersSection from "../components/sections/PartnersSection";
 
 export default function HomePage() {
   const router = useRouter();
@@ -196,6 +197,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Partners Section */}
+      <PartnersSection />
+
       {/* Features Section - Mobile Optimized */}
       <section id="features" className="py-16 sm:py-24 bg-white/5">
         <div className="mx-auto max-w-7xl px-4">
@@ -245,3 +249,4 @@ export default function HomePage() {
     </div>
   );
 }
+

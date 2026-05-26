@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { PACKAGES, type PromotionPackage } from "../../lib/packages";
@@ -19,6 +19,9 @@ function PromoteContent() {
   const [chain, setChain] = useState<string | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<PromotionPackage | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Create a ref for the payment section
+  const paymentSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!ca) {
@@ -29,6 +32,19 @@ function PromoteContent() {
     setChain(detected);
     setLoading(false);
   }, [ca, router]);
+
+  // Auto-scroll to payment section when a package is selected
+  useEffect(() => {
+    if (selectedPackage && paymentSectionRef.current) {
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        paymentSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }, 100);
+    }
+  }, [selectedPackage]);
 
   const handleSelectPackage = (pkg: PromotionPackage) => {
     setSelectedPackage(pkg);
@@ -59,6 +75,7 @@ function PromoteContent() {
         </button>
 
         <div className="grid gap-12 lg:grid-cols-2">
+          {/* Left Column - Token Info */}
           <div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
               <h2 className="mb-4 text-lg font-semibold text-white/90">Token Information</h2>
@@ -79,6 +96,7 @@ function PromoteContent() {
             </div>
           </div>
 
+          {/* Right Column - Packages */}
           <div>
             <h2 className="mb-4 text-lg font-semibold text-white/90">Select Your Package</h2>
             <div className="space-y-4">
@@ -118,13 +136,40 @@ function PromoteContent() {
               ))}
             </div>
 
-            <button
-              onClick={handleContinue}
-              disabled={!selectedPackage}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 py-4 font-semibold text-white transition hover:scale-[1.02] disabled:opacity-50"
-            >
-              Continue to Payment <ArrowRight className="h-5 w-5" />
-            </button>
+            {/* Payment Section - This is where we scroll to */}
+            <div ref={paymentSectionRef} className="mt-8 pt-4">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+                <h3 className="text-lg font-semibold text-white/90 mb-3">Payment Summary</h3>
+                {selectedPackage ? (
+                  <>
+                    <div className="space-y-3 mb-6">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-white/50">Selected Package:</span>
+                        <span className="text-white/80 font-semibold">{selectedPackage.name}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-white/50">Duration:</span>
+                        <span className="text-white/80">{selectedPackage.duration}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-white/50">Total Amount:</span>
+                        <span className="text-xl font-bold text-blue-400">${selectedPackage.price.usd}</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleContinue}
+                      className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 py-4 font-semibold text-white transition hover:scale-[1.02]"
+                    >
+                      Continue to Payment <ArrowRight className="h-5 w-5" />
+                    </button>
+                  </>
+                ) : (
+                  <div className="text-center py-6">
+                    <p className="text-white/50">Select a package above to continue</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -21,7 +21,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleNavigation = async (
-    e: React.MouseEvent<HTMLAnchorElement>,
+    e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>,
     href: string
   ) => {
     e.preventDefault();
@@ -34,15 +34,23 @@ export default function Navbar() {
 
     if (href.startsWith("/#")) {
       const sectionId = href.substring(2);
+      
+      // If we're already on homepage
       if (window.location.pathname === "/") {
         const element = document.getElementById(sectionId);
-        if (element) element.scrollIntoView({ behavior: "smooth" });
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
       } else {
+        // Navigate to homepage first, then scroll
         router.push("/");
+        // Small delay to ensure page loads before scrolling
         setTimeout(() => {
           const element = document.getElementById(sectionId);
-          if (element) element.scrollIntoView({ behavior: "smooth" });
-        }, 100);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 150);
       }
     } else {
       router.push(href);
@@ -52,11 +60,9 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Mobile: h-14, Desktop: h-20 */}
         <div className="flex h-14 sm:h-20 items-center justify-between">
-          {/* Logo - smaller on mobile */}
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-1 sm:gap-0 group">
-            {/* Logo Image - smaller on mobile */}
             <div className="flex h-10 w-10 sm:h-14 sm:w-14 items-center justify-center overflow-hidden">
               <img
                 src="/images/boostlogo.png"
@@ -67,7 +73,6 @@ export default function Navbar() {
                 }}
               />
             </div>
-            {/* Text - hidden on mobile, visible on desktop */}
             <div className="hidden sm:flex flex-col">
               <span className="text-sm font-bold tracking-tight leading-tight">
                 <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -81,7 +86,7 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Navigation - hidden on mobile */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:gap-6 lg:gap-8">
             {navigation.map((item) => (
               <Link
@@ -102,11 +107,7 @@ export default function Navbar() {
             className="text-white/70 md:hidden p-2 rounded-lg hover:bg-white/10 transition"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
