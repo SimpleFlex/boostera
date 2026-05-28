@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Menu, X, Home, Headphones, HelpCircle } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
+import { Menu, X, Home, Headphones, HelpCircle, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navigation = [
@@ -18,7 +18,28 @@ const navigation = [
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const openBookingPage = () => {
+    router.push("/book-appointment");
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+      return true;
+    }
+    return false;
+  };
 
   const handleNavigation = async (
     e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>,
@@ -35,22 +56,23 @@ export default function Navbar() {
     if (href.startsWith("/#")) {
       const sectionId = href.substring(2);
       
-      // If we're already on homepage
-      if (window.location.pathname === "/") {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
+      if (pathname === "/") {
+        if (!scrollToSection(sectionId)) {
+          setTimeout(() => scrollToSection(sectionId), 100);
+          setTimeout(() => scrollToSection(sectionId), 300);
         }
       } else {
-        // Navigate to homepage first, then scroll
         router.push("/");
-        // Small delay to ensure page loads before scrolling
         setTimeout(() => {
-          const element = document.getElementById(sectionId);
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-          }
-        }, 150);
+          const checkAndScroll = () => {
+            if (document.getElementById(sectionId)) {
+              scrollToSection(sectionId);
+            } else {
+              setTimeout(checkAndScroll, 100);
+            }
+          };
+          checkAndScroll();
+        }, 200);
       }
     } else {
       router.push(href);
@@ -99,6 +121,14 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
+            {/* Book Appointment Button */}
+            <button
+              onClick={openBookingPage}
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:scale-105"
+            >
+              <Calendar className="h-4 w-4" />
+              Book Appointment
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -131,6 +161,14 @@ export default function Navbar() {
                     {item.name}
                   </button>
                 ))}
+                {/* Book Appointment Button in Mobile Menu */}
+                <button
+                  onClick={openBookingPage}
+                  className="flex items-center justify-center gap-2 w-full mt-2 py-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:scale-105"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Book Appointment
+                </button>
               </div>
             </motion.div>
           )}
